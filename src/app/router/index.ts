@@ -8,7 +8,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/about',
-    component: () => import('../views/About.vue')
+    component: () => import('../about/views/About.vue')
   },
   {
     path: '/apod/today',
