@@ -9,6 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "inversify": "^5.0.5",
+    "moment": "^2.29.1",
+    "paper": "^0.12.11",
+    "reflect-metadata": "^0.1.13",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0"

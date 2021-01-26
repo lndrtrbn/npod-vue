@@ -1,10 +1,21 @@
 <template>
+  <Cursor />
   <div id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </div>
   <router-view/>
 </template>
+
+<script lang="ts">
+import Cursor from "@/shared/components/Cursor.vue";
+import { Options, Vue } from "vue-class-component";
+
+@Options({
+  components: { Cursor}
+})
+export default class App extends Vue {}
+</script>
 
 <style lang="scss">
 #app {
