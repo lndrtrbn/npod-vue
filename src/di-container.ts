@@ -8,7 +8,7 @@ const DIContainer = new Container();
 // ====================================
 // Use : DIContainer.get(X) to retrieve a dependancy.
 
-DIContainer.bind<CursorHoverService>(CursorHoverService).toSelf();
+DIContainer.bind<CursorHoverService>(CursorHoverService).toSelf().inSingletonScope();
 
 // ====================================
 

@@ -1,5 +1,5 @@
 <template>
-    <div id=small-cursor class="cursor cursor--small"></div>
+    <div ref="smallCursor" class="cursor cursor--small"></div>
     <canvas id="cursorCanvas" class="cursor cursor--canvas" resize></canvas>
 </template>
 
@@ -13,8 +13,8 @@ import DIContainer from "@/di-container";
 
 @Options({})
 export default class Cursor extends Vue {
-    cursorService?: CursorHoverService;
-    smallCursor?: HTMLDivElement|null;
+    cursorService!: CursorHoverService;
+    // ======
 
     position: CursorPosition = { x: -100, y: -100 };
     lastPosition: CursorPosition = { x: -100, y: -100 };
@@ -37,6 +37,8 @@ export default class Cursor extends Vue {
 
     /**
      * Retrieve dependancies.
+     * 
+     * cursorService: To listen for stuck position.
      */
     beforeCreate() {
         this.cursorService = DIContainer.get(CursorHoverService);
@@ -46,14 +48,12 @@ export default class Cursor extends Vue {
      * Starts cursor animation when the dom is ready.
      */
     mounted() {
-        this.smallCursor = document.querySelector<HTMLDivElement>("#small-cursor");
         document.addEventListener("mousemove", this.updateCursorPosition);
-        this.cursorService?.stuckPosition.subscribe(p => this.stuckPosition = p);
-
+        this.cursorService.stuckPosition.subscribe(p => this.stuckPosition = p);
         new paper.Project("cursorCanvas");
+
         // The base shape for the noisy circle.
         this.polygon = this.buildCirclePolygon();
-    
         // The draw loop of Paper.js.
         // (60fps with requestAnimationFrame under the hood).
         paper.view.onFrame = () => {
@@ -64,10 +64,6 @@ export default class Cursor extends Vue {
 
     unmounted() {
         document.removeEventListener("mousemove", this.updateCursorPosition);
-    }
-
-    updateCursorPosition(event: MouseEvent) {
-        this.position = { x: event.clientX, y: event.clientY };
     }
 
     /**
@@ -105,10 +101,18 @@ export default class Cursor extends Vue {
      * Computes the position of the small cursor.
      */
     renderSmallCursor(): void {
-        if (this.smallCursor) {
-            const newPosition = `translate(${this.position.x}px, ${this.position.y}px)`;
-            this.smallCursor.style.transform = newPosition;
-        }
+        const newPosition = `translate(${this.position.x}px, ${this.position.y}px)`;
+        const smallCursor: HTMLDivElement = this.$refs.smallCursor as HTMLDivElement;
+        smallCursor.style.transform = newPosition;
+    }
+
+    /**
+     * Update the position with the one retrieve from mouse event.
+     * 
+     * @param event The mouse event used to get position.
+     */
+    private updateCursorPosition(event: MouseEvent) {
+        this.position = { x: event.clientX, y: event.clientY };
     }
 
     /**
